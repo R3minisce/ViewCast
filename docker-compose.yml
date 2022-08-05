@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  viewcast_db:
+    container_name: viewcast_db
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - viewcast:/var/lib/mysql
+
+  viewcast_api:
+    container_name: viewcast_api
+    restart: always
+    build:
+      context: ./Applications/api/
+      dockerfile: Dockerfile
+    ports:
+      - 8887:8000
+
+  viewcast_orch:
+    container_name: viewcast_orch
+    restart: always
+    build:
+      context: ./Applications/orchestrator/
+      dockerfile: Dockerfile
+    ports:
+      - 8885:3000
+      - 8886:3001
+
+  viewcast_web:
+    container_name: viewcast_web
+    restart: always
+    build:
+      context: ./Applications/viewcast/
+      dockerfile: Dockerfile
+    ports:
+      - 8888:80
+
+volumes:
+  viewcast:
